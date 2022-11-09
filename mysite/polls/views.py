@@ -6,7 +6,7 @@ from django.template import loader
 
 from .models import Question
 
-
+# abc
 def index(request):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
     context = {'latest_question_list': latest_question_list}
