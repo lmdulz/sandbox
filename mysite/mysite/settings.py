@@ -14,7 +14,11 @@ from pathlib import Path
 import os
 CSRF_TRUSTED_ORIGINS = ['https://*.gitpod.io']
 
+BASE_URL= 'https://8000-lmdulz-sandbox-5n72wb8wml7.ws-eu75.gitpod.io'
+DJANGO_ALLOWED_HOSTS='8000-lmdulz-sandbox-5n72wb8wml7.ws-eu75.gitpod.io,localhost,127.0.0.1'
+DJANGO_CSRF_TRUSTED_ORIGINS='https://8000-lmdulz-sandbox-5n72wb8wml7.ws-eu75.gitpod.io'
 
+DJANGO_INTERNAL_IPS='127.0.0.1'
 
 
 
@@ -40,6 +44,7 @@ INSTALLED_APPS = [
     'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
+    #hier die app welche gruppen beinhaltet
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
