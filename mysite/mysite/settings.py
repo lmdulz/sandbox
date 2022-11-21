@@ -41,7 +41,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     #hier die app welche gruppen beinhaltet
@@ -49,6 +48,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'polls.apps.PollsConfig',
+    'accounts.apps.AccountsConfig',
+    'groups.apps.GroupsConfig',
+    'mysite.apps.MysiteConfig'
+    
 ]
 
 MIDDLEWARE = [
@@ -61,6 +65,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# This defines where to look first for the urls in the whole application
+# From there it gets rooted to the other links
 ROOT_URLCONF = 'mysite.urls'
 
 TEMPLATES = [
@@ -134,5 +140,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+LOGIN_REDIRECT_URL = "/login/"
 
