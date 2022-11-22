@@ -12,8 +12,10 @@ class MyUserAdmin(UserAdmin):
         "first_name",
         "last_name",
         "is_staff",
+        "department",
+        
     )
-    change_form_template = "loginas/change_form.html"
+    #change_form_template = "loginas/change_form.html"
 
 
 admin.site.register(User, MyUserAdmin)

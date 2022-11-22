@@ -1,12 +1,15 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import AccessMixin, LoginRequiredMixin
+from django.views.generic import DetailView
+from .models import User
 
 def register_view(request):
     form = UserCreationForm(request.POST or None)
     if form.is_valid():
         user_obj = form.save()
-        return redirect('/login')
+        return redirect('login/')
     context = {"form": form}
     return render(request, "accounts/register.html", context)
 
@@ -30,8 +33,23 @@ def login_view(request):
 def logout_view(request):
     if request.method == "POST":
         logout(request)
-        return redirect("/login/")
+        return redirect("login/")
     return render(request, "accounts/logout.html", {})
 
 # class HomeView(TemplateView):
 #     template_name = "mysite/home.html"
+
+class UserProfileView(LoginRequiredMixin, AccessMixin, DetailView):
+    model = User
+    template_name = "accounts/user_profile.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        """Only staff and the user himself has access."""
+        check_access = True
+        if request.user.is_staff:
+            check_access = False
+
+        if check_access and request.user.pk != kwargs["pk"]:
+            self.handle_no_permission()
+
+        return super().dispatch(request, *args, **kwargs)

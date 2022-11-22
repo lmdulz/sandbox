@@ -16,6 +16,7 @@ Including another URLconf
 #test comment
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
 from . import views
 
 
@@ -26,3 +27,7 @@ urlpatterns = [
     path('groups/', include('groups.urls')),
     path('admin/', admin.site.urls),
 ]
+
+# Django loginas
+urlpatterns += [path("admin/", include("loginas.urls"))]
+
