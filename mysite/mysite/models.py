@@ -29,21 +29,7 @@ class DicomNode(models.Model):
         node_types_dict = dict(self.NodeType.choices)
         return f"DICOM {node_types_dict[self.node_type]} {self.name}"
 
-    def save(self, *args, **kwargs):
-        # instance = super(DicomNode, self).save(*args, **kwargs)
-        # if self.source_active == True and self.destination_active == False:
-        #     print("created src access")  
-            
-        #     p_instance  = Access(
-        #         access_type="src",
-        #         node = DicomNode
-        #     )
-        #     p_instance.refrence.add(instance)
-        #     p_instance.save()
-        #     print("created src access")    
-            
-        # else:
-        #     print("irgendwas")
+   
 
         '''
         MAKE ALL OF THIS A SIGNAL
@@ -91,6 +77,41 @@ class DicomServer(DicomNode):
     dicomweb_wado_support = models.BooleanField(default=False)
     dicomweb_stow_support = models.BooleanField(default=False)
 
+    def save(self, *args, **kwargs):
+        super(DicomServer, self).save(*args, **kwargs)
+        if self.source_active == True and self.destination_active == False:
+            print("created src access")  
+            
+            Access.objects.create(
+                access_type="src",
+                node = self
+            )
+            
+            #p_instance.save()
+            print("created src access")    
+        elif self.source_active == False and self.destination_active == True:
+            Access.objects.create(
+                access_type="dst",
+                node = self
+                )
+            
+        elif self.source_active == True and self.destination_active == True:
+            Access.objects.create(
+                access_type="bi",
+                node = self
+                )
+            Access.objects.create(
+                access_type="dst",
+                node = self
+                )
+            Access.objects.create(
+                access_type="src",
+                node = self
+            )
+            
+        else:
+            print("did not work")
+            
     
 
 class DicomFolder(DicomNode):
