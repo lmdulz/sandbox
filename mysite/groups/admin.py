@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Access
 
 class AccessAdmin(admin.ModelAdmin):
-     list_display = ("access_type",
+     list_display = ("name","access_type",
                      "group",
                      "node")
      
