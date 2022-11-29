@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import Group
-from mysite.models import DicomNode
+import mysite.models as mm
+from django.core.exceptions import ValidationError
+from django.contrib import messages
 
 class Access(models.Model):
     
@@ -11,10 +13,10 @@ class Access(models.Model):
         DESTINATION = "dst", "Destination" 
 
     
-    access_type = models.CharField(max_length = 3, choices=AccessType.choices)
+    access_type = models.CharField(max_length = 3, choices=AccessType.choices, editable = False)
     
-    group  = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='GroupAccess' )
-    node   = models.ForeignKey(DicomNode, on_delete=models.CASCADE)
+    group  = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='GroupAccess',null = True, blank=True,default = None, editable = False )
+    node   = models.ForeignKey(mm.DicomNode, on_delete=models.CASCADE, editable = False )
     name = models.CharField(unique=False, max_length=128, null = True, blank=True, editable=False)
 
 
@@ -33,34 +35,25 @@ class Access(models.Model):
 
     def save(self, *args, **kwargs):
         access_type_dict = dict(self.AccessType.choices)
-        self.name = f"{access_type_dict[self.access_type]}_{self.group}_{self.node}"
+        if self.access_type == "src" and self.node.source_active == False:
+            raise ValidationError(f"Invalid Access type: {self.access_type}")
+
+        if self.access_type == "dst" and self.node.destination_active == False:
+            #messages.error(request, "Invalid Access Type")
+            raise ValidationError(f"Invalid Access type: {self.access_type}")
+
+        if self.access_type == "bi" and (self.node.destination_active == False or self.node.source_active == False):
+            raise ValidationError(f"Invalid Access type: {self.access_type}")
+
+        if not self.group == None:
+            self.name = f"{access_type_dict[self.access_type]}_{self.group}_{self.node}"
+        else:
+            self.name = f"{access_type_dict[self.access_type]}_{self.node}"
         super(Access, self).save(*args, **kwargs)
     
 
 
 
-
-    #name = models.CharField(unique=False, max_length=128, null = True, blank=True, editable=False,default = f"{access_type_dict[access_type]}_{group}_{node}")
-    
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    # # #def __str__(self):
-    #     access_type_dict = dict(self.AccessType.choices)
-        
-    #     self.name = models.CharField(unique=False, max_length=128, null = True, blank=True, editable=False,default = f"{self.access_type}_{self.group}_{self.node.name}")
-
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.access_type = self.access_type
-    #     self.group = group
-    #     self.node = node
-
-    # access_type_dict = dict(self.AccessType.choices)
-    # name = models.CharField(unique=True, max_length=128, null = True, default = f"{access_type_dict[self.node_type]}_{self.group}_{self.node}")
-    
-    # def __init__(self, *args, **kwargs):
-    #         super().__init__(*args, **kwargs)
-    #         self.name = f"{self.access_type}_{self.group}_{self.node}"
     
 '''
 from accounts.models import User

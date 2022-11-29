@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'polls.apps.PollsConfig',
     'accounts.apps.AccountsConfig',
     'groups.apps.GroupsConfig',
-    'mysite.apps.MysiteConfig'
+    'mysite.apps.MysiteConfig',
+    
     
 ]
 

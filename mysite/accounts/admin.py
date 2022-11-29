@@ -14,7 +14,12 @@ class GroupForm(forms.ModelForm):
         required=False,
         widget=admin.widgets.FilteredSelectMultiple(
             "users", is_stacked=False))
-
+    accesses = forms.ModelMultipleChoiceField(
+        label='Access',
+        queryset=Access.objects.all(),
+        required=False,
+        widget=admin.widgets.FilteredSelectMultiple(
+            "accesses", is_stacked=False))
     class Meta:
         model = Group
         exclude = ()  # since Django 1.8 this is needed

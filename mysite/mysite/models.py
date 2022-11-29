@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from groups.models import Access
 
 
 class DicomNode(models.Model):
@@ -28,6 +29,39 @@ class DicomNode(models.Model):
         node_types_dict = dict(self.NodeType.choices)
         return f"DICOM {node_types_dict[self.node_type]} {self.name}"
 
+    def save(self, *args, **kwargs):
+        instance = super(DicomNode, self).save(*args, **kwargs)
+        if self.source_active == True and self.destination_active == False:
+            print("created src access")  
+            
+            p_instance  = Access.objects.create(
+                access_type="src",
+                node = DicomNode
+            )
+            p_instance.refrence.add(instance)
+            p_instance.save()
+            print("created src access")    
+            
+        else:
+            print("irgendwas")
+        
+        # elif DicomServer.source_active == False and DicomServer.destination_active == True:
+        #     Access.objects.create(
+        #         access_type="dst",
+        #         node = self.DicomServer
+        #         )
+        #     super(DicomServer, self).save(*args, **kwargs)
+        # elif DicomServer.source_active == True and DicomServer.destination_active == True:
+        #     Access.objects.create(
+        #         access_type="bi",
+        #         node = self.DicomServer
+        #         )
+        #     super(DicomServer, self).save(*args, **kwargs)
+        # else:
+        #     print("did not work")
+        #     super(DicomDicomServerNode, self).save(*args, **kwargs)
+    
+
 
 class DicomServer(DicomNode):
     NODE_TYPE = DicomNode.NodeType.SERVER
@@ -52,6 +86,7 @@ class DicomServer(DicomNode):
     dicomweb_wado_support = models.BooleanField(default=False)
     dicomweb_stow_support = models.BooleanField(default=False)
 
+    
 
 class DicomFolder(DicomNode):
     NODE_TYPE = DicomNode.NodeType.FOLDER
