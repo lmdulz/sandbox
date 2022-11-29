@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import Group
-import mysite.models as mm
+from mysite.models import DicomNode
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 
@@ -16,7 +16,7 @@ class Access(models.Model):
     access_type = models.CharField(max_length = 3, choices=AccessType.choices, editable = False)
     
     group  = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='GroupAccess',null = True, blank=True,default = None, editable = False )
-    node   = models.ForeignKey(mm.DicomNode, on_delete=models.CASCADE, editable = False )
+    node   = models.ForeignKey(DicomNode, on_delete=models.CASCADE, editable = False )
     name = models.CharField(unique=False, max_length=128, null = True, blank=True, editable=False)
 
 

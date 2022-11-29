@@ -30,20 +30,25 @@ class DicomNode(models.Model):
         return f"DICOM {node_types_dict[self.node_type]} {self.name}"
 
     def save(self, *args, **kwargs):
-        instance = super(DicomNode, self).save(*args, **kwargs)
-        if self.source_active == True and self.destination_active == False:
-            print("created src access")  
+        # instance = super(DicomNode, self).save(*args, **kwargs)
+        # if self.source_active == True and self.destination_active == False:
+        #     print("created src access")  
             
-            p_instance  = Access.objects.create(
-                access_type="src",
-                node = DicomNode
-            )
-            p_instance.refrence.add(instance)
-            p_instance.save()
-            print("created src access")    
+        #     p_instance  = Access(
+        #         access_type="src",
+        #         node = DicomNode
+        #     )
+        #     p_instance.refrence.add(instance)
+        #     p_instance.save()
+        #     print("created src access")    
             
-        else:
-            print("irgendwas")
+        # else:
+        #     print("irgendwas")
+
+        '''
+        MAKE ALL OF THIS A SIGNAL
+        https://stackoverflow.com/questions/26379026/resolving-circular-imports-in-celery-and-django
+        '''
         
         # elif DicomServer.source_active == False and DicomServer.destination_active == True:
         #     Access.objects.create(
