@@ -63,6 +63,7 @@ class MyUserAdmin(UserAdmin):
     ordering = ("date_joined",)
     list_display = (
         "username",
+        "pk",
         "email",
         "date_joined",
         "first_name",
