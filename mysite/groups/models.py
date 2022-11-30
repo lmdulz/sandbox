@@ -31,7 +31,8 @@ class Access(models.Model):
     #     if self.access_type == "bi" and (self.node.destination_active == False or self.node.source_active == False):
     #         raise AssertionError(f"Invalid Access type: {self.access_type}")
             
-
+    def __str__(self):
+        return f"{self.name}"
 
     def save(self, *args, **kwargs):
         access_type_dict = dict(self.AccessType.choices)

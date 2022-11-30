@@ -27,7 +27,7 @@ class GroupForm(forms.ModelForm):
             'permissions': admin.widgets.FilteredSelectMultiple(
                 "permissions", is_stacked=False),
         }
-
+    
 
 class MyGroupAdmin(GroupAdmin):
     form = GroupForm
@@ -38,12 +38,21 @@ class MyGroupAdmin(GroupAdmin):
         obj.user_set.clear()
         for user in form.cleaned_data['users']:
              obj.user_set.add(user)
+        
+        obj.GroupAccess.clear()
+        for access in form.cleaned_data["accesses"]:
+            obj.GroupAccess.add(access)
 
     def get_form(self, request, obj=None, **kwargs):
         if obj:
             self.form.base_fields['users'].initial = [o.pk for o in obj.user_set.all()]
         else:
             self.form.base_fields['users'].initial = []
+
+        if obj:
+            self.form.base_fields['accesses'].initial = [o.pk for o in obj.GroupAccess.all()]
+        else:
+            self.form.base_fields['accesses'].initial = []
         return GroupForm
 
 # unregister and register again
