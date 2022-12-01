@@ -8,7 +8,7 @@ class Access(models.Model):
     
       
     class AccessType(models.TextChoices):
-        BIDIRECTIONAL = "bi", "Bidirectional"
+        #BIDIRECTIONAL = "bi", "Bidirectional"
         SOURCE = "src", "Source"
         DESTINATION = "dst", "Destination" 
 
@@ -36,15 +36,15 @@ class Access(models.Model):
 
     def save(self, *args, **kwargs):
         access_type_dict = dict(self.AccessType.choices)
-        if self.access_type == "src" and self.node.source_active == False:
-            raise ValidationError(f"Invalid Access type: {self.access_type}")
+        # if self.access_type == "src" and self.node.source_active == False:
+        #     raise ValidationError(f"Invalid Access type: {self.access_type}")
 
-        if self.access_type == "dst" and self.node.destination_active == False:
-            #messages.error(request, "Invalid Access Type")
-            raise ValidationError(f"Invalid Access type: {self.access_type}")
+        # if self.access_type == "dst" and self.node.destination_active == False:
+        #     #messages.error(request, "Invalid Access Type")
+        #     raise ValidationError(f"Invalid Access type: {self.access_type}")
 
-        if self.access_type == "bi" and (self.node.destination_active == False or self.node.source_active == False):
-            raise ValidationError(f"Invalid Access type: {self.access_type}")
+        # if self.access_type == "bi" and (self.node.destination_active == False or self.node.source_active == False):
+        #     raise ValidationError(f"Invalid Access type: {self.access_type}")
 
         if not self.group == None:
             self.name = f"{access_type_dict[self.access_type]}_{self.group}_{self.node}"
@@ -73,4 +73,20 @@ zugang = gruppen.GroupAccess.filter(access_type="src")
 
 In [28]: zugang.first().node.source_active
 Out[28]: False
+
+
+
+FINAL QUERY!!!!:...bullshit
+bob = User.objects.filter(username="bob")
+bob.groups.get().GroupAccess.filter(access_type="src").get().node
+
+
+neuer versuch: (der klappt)
+myquery = []
+for gruppe in bob.groups.all():
+    accesses = gruppe.GroupAccess.filter(access_type="src")
+    for access in accesses.all():
+        myquery.append(access.node.name)
+myNodes = DicomNode.objects.filter(name__in=myquery)
+queryset = myNodes
 '''

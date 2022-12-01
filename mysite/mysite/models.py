@@ -86,9 +86,7 @@ class DicomServer(DicomNode):
                 access_type="src",
                 node = self
             )
-            
-            #p_instance.save()
-            print("created src access")    
+                           
         elif self.source_active == False and self.destination_active == True:
             Access.objects.create(
                 access_type="dst",
@@ -96,10 +94,10 @@ class DicomServer(DicomNode):
                 )
             
         elif self.source_active == True and self.destination_active == True:
-            Access.objects.create(
-                access_type="bi",
-                node = self
-                )
+            # Access.objects.create(
+            #     access_type="bi",
+            #     node = self
+            #     )
             Access.objects.create(
                 access_type="dst",
                 node = self
@@ -128,3 +126,37 @@ class DicomFolder(DicomNode):
         blank=True,
         help_text="When to warn the admins by Email (used space in GB).",
     )
+
+    def save(self, *args, **kwargs):
+        super(DicomServer, self).save(*args, **kwargs)
+        if self.source_active == True and self.destination_active == False:
+            pass
+            # print("created src access")  
+            
+            # Access.objects.create(
+            #     access_type="src",
+            #     node = self
+            # )
+                           
+        elif self.source_active == False and self.destination_active == True:
+            Access.objects.create(
+                access_type="dst",
+                node = self
+                )
+            
+        elif self.source_active == True and self.destination_active == True:
+            # Access.objects.create(
+            #     access_type="bi",
+            #     node = self
+            #     )
+            Access.objects.create(
+                access_type="dst",
+                node = self
+                )
+            # Access.objects.create(
+            #     access_type="src",
+            #     node = self
+            # )
+            
+        else:
+            print("did not work")
